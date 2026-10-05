@@ -1,0 +1,26 @@
+{
+  "name": "scp-sl-web",
+  "version": "0.4.1",
+  "description": "SCP:SL Web Edition - Babylon.js + WebSocket 邀请码联机，支持 Railway 部署",
+  "main": "server.cjs",
+  "scripts": {
+    "start": "node server.cjs",
+    "dev": "node server.cjs"
+  },
+  "keywords": [
+    "scp",
+    "scp-sl",
+    "babylonjs",
+    "websocket",
+    "multiplayer",
+    "railway"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.16.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
