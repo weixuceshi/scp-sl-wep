@@ -3,9 +3,17 @@ const fs = require('fs');
 const path = require('path');
 const { WebSocketServer } = require('ws');
 
-const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 8000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080; // 改默认8080匹配日志
 const publicDir = path.join(__dirname, 'public');
 
+// 👇 新增调试日志（定位404核心）
+console.log('__dirname:', __dirname);
+console.log('publicDir:', publicDir);
+console.log('index exists:', fs.existsSync(path.join(publicDir, 'index.html')));
+console.log('public contents:', fs.existsSync(publicDir) ? fs.readdirSync(publicDir) : 'NOT FOUND');
+
+// —— HTTP 静态文件服务 ——
+const mimeTypes = {
 // ── HTTP 静态文件服务 ──────────────────────────
 const mimeTypes = {
   '.html': 'text/html; charset=utf-8',
