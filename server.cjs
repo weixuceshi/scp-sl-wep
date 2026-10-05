@@ -11,9 +11,6 @@ console.log('publicDir:', publicDir);
 console.log('index exists:', fs.existsSync(path.join(publicDir, 'index.html')));
 
 // —— HTTP 静态文件服务 ——
-
-const mimeTypes = {
-// ── HTTP 静态文件服务 ──────────────────────────
 const mimeTypes = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
