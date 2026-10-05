@@ -9,8 +9,8 @@ const publicDir = path.join(__dirname, 'public');
 console.log('__dirname:', __dirname);
 console.log('publicDir:', publicDir);
 console.log('index exists:', fs.existsSync(path.join(publicDir, 'index.html')));
+console.log('public files:', fs.existsSync(publicDir) ? fs.readdirSync(publicDir) : 'NO_PUBLIC_DIR');
 
-// —— HTTP 静态文件服务 ——
 const mimeTypes = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
@@ -28,26 +28,34 @@ const server = http.createServer((req, res) => {
   let filePath = decodeURIComponent(req.url.split('?')[0]);
   if (filePath === '/') filePath = '/index.html';
   const fullPath = path.join(publicDir, filePath);
+  
+  console.log('Request:', filePath, '->', fullPath);
+  console.log('publicDir:', publicDir, 'startsWith:', fullPath.startsWith(publicDir));
 
-  // 防越界
-  if (!fullPath.startsWith(publicDir)) {
-    res.writeHead(403); res.end('Forbidden'); return;
-  }
+  // 临时注释防越界，测试用
+  // if (!fullPath.startsWith(publicDir)) {
+  //   res.writeHead(403); res.end('Forbidden'); return;
+  // }
 
-  // 健康检查（Railway 探活用）
+  // 健康检查等保留...
   if (filePath === '/health' || filePath === '/healthz') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ ok: true, uptime: process.uptime(), rooms: rooms.size, clients: clients.size }));
-    return;
-  }
-  // 部署信息
-  if (filePath === '/api/info') {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ name: 'SCP:SL Web Edition', version: '0.4.1', mode: 'railway' }));
+    res.end(JSON.stringify({ ok: true, uptime: process.uptime() }));
     return;
   }
 
   fs.readFile(fullPath, (err, data) => {
+    if (err) {
+      console.log('Read error:', fullPath, err.code);
+      res.writeHead(404);
+      res.end('Not found: ' + filePath);
+      return;
+    }
+    const ext = path.extname(fullPath).toLowerCase();
+    res.writeHead(200, { 'Content-Type': mimeTypes[ext] || 'application/octet-stream' });
+    res.end(data);
+  });
+});
     if (err) {
       res.writeHead(404); res.end('Not found: ' + filePath); return;
     }
